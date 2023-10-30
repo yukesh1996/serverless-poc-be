@@ -1,41 +1,37 @@
+# AWS Lambda Node.js Typescript
+
+## What is AWS Lambda function ?
+AWS Lambda is an Amazon Web Services serverless computing service, sometimes known as FaaS (Function as a Service). It supports a diverse set of possible triggers, such as incoming HTTP requests, messages from a queue, customer emails, changes to database records, and much more. AWS Lambda also allows you to concentrate on your core product and business logic rather than maintaining the operating system (OS), access control, and so on.
+
+## How AWS Lambda works?
+Clients give information to Lambda. Clients might be anyone who sends AWS Lambda queries. This might be an application or one of Amazon's other services.
+Lambda takes requests and, according on the size, amount, or volume of the data, executes them. Requests are then sent to a function for processing. 
+
 # Serverless - AWS Node.js Typescript
 
 This project has been generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/).
 
-For detailed instructions, please refer to the [documentation](https://www.serverless.com/framework/docs/providers/aws/).
+```
+npm i serverless -g
+serverless create --template aws-nodejs-typescript --path stocks-api
+```
 
 ## Installation/deployment instructions
-
-Depending on your preferred package manager, follow the instructions below to deploy your project.
-
-> **Requirements**: NodeJS `lts/fermium (v.14.15.0)`. If you're using [nvm](https://github.com/nvm-sh/nvm), run `nvm use` to ensure you're using the same Node version in local and in your lambda's runtime.
 
 ### Using NPM
 
 - Run `npm i` to install the project dependencies
 - Run `npx sls deploy` to deploy this stack to AWS
 
-### Using Yarn
-
-- Run `yarn` to install the project dependencies
-- Run `yarn sls deploy` to deploy this stack to AWS
-
 ## Test your service
-
-This template contains a single lambda function triggered by an HTTP request made on the provisioned API Gateway REST API `/scraper` route with `POST` method. The request body must be provided as `application/json`. The body structure is tested by API Gateway against `src/functions/scraper/schema.ts` JSON-Schema definition: it must contain the `name` property.
-
-- requesting any other path than `/scraper` with any other method than `POST` will result in API Gateway returning a `403` HTTP error code
-- sending a `POST` request to `/scraper` with a payload **not** containing a string property named `name` will result in API Gateway returning a `400` HTTP error code
-- sending a `POST` request to `/scraper` with a payload containing a string property named `name` will result in API Gateway returning a `200` HTTP status code with a message saluting the provided name and the detailed event processed by the lambda
-
-> :warning: As is, this template, once deployed, opens a **public** endpoint within your AWS account resources. Anybody with the URL can actively execute the API Gateway endpoint and the corresponding lambda. You should protect this endpoint with the authentication method of your choice.
 
 ### Locally
 
 In order to test the scraper function locally, run the following command:
 
+- `npm install serverless-offline --save-dev`
+- `serverless offline`
 - `npx sls invoke local -f scraper --path src/functions/scraper/mock.json` if you're using NPM
-- `yarn sls invoke local -f scraper --path src/functions/scraper/mock.json` if you're using Yarn
 
 Check the [sls invoke local command documentation](https://www.serverless.com/framework/docs/providers/aws/cli-reference/invoke-local/) for more information.
 
@@ -69,6 +65,11 @@ The project code base is mainly located within the `src` folder. This folder is 
 │   │   │   ├── index.ts        # `scraper` lambda Serverless configuration
 │   │   │   ├── mock.json       # `scraper` lambda input parameter, if any, for local invocation
 │   │   │   └── schema.ts       # `scraper` lambda input event JSON-Schema
+|   |   ├── product
+│   │   │   ├── handler.ts      # `product` lambda source code
+│   │   │   ├── index.ts        # `product` lambda Serverless configuration
+│   │   │   ├── mock.json       # `product` lambda input parameter, if any, for local invocation
+│   │   │   └── schema.ts       # `product` lambda input event JSON-Schema
 │   │   │
 │   │   └── index.ts            # Import/export of all lambda configurations
 │   │
@@ -84,19 +85,15 @@ The project code base is mainly located within the `src` folder. This folder is 
 └── webpack.config.js           # Webpack configuration
 ```
 
-### 3rd party libraries
+## Architecture
 
-- [json-schema-to-ts](https://github.com/ThomasAribart/json-schema-to-ts) - uses JSON-Schema definitions used by API Gateway for HTTP request validation to statically generate TypeScript types in your lambda's handler code base
-- [middy](https://github.com/middyjs/middy) - middleware engine for Node.Js lambda. This template uses [http-json-body-parser](https://github.com/middyjs/middy/tree/master/packages/http-json-body-parser) to convert API Gateway `event.body` property, originally passed as a stringified JSON, to its corresponding parsed object
-- [@serverless/typescript](https://github.com/serverless/typescript) - provides up-to-date TypeScript definitions for your `serverless.ts` service file
+![Architecture](https://raw.githubusercontent.com/yukesh1996/articles/main/images/lambda.drawio.png)
 
-### Advanced usage
+## Screenshots
 
-Any tsconfig.json can be used, but if you do, set the environment variable `TS_NODE_CONFIG` for building the application, eg `TS_NODE_CONFIG=./tsconfig.app.json npx serverless webpack`
+![Product Scrapper](https://raw.githubusercontent.com/yukesh1996/articles/main/images/ProductScrap.png)
 
-App ID
-t0Cksicb
-Client ID (Consumer Key)
-dj0yJmk9M1NibjRSSmJqdEJ2JmQ9WVdrOWREQkRhM05wWTJJbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWUy
-Client Secret (Consumer Secret)
-9095f6801c6c60346c700102b914a23c221d289b
+![Scrapped Products](https://raw.githubusercontent.com/yukesh1996/articles/main/images/Scrappedproducts.png)
+
+# Conclusion
+Using AWS Lambda, We can build a service without managing servers. We now pay for what We've consumed rather than a set amount each month.
